@@ -17,19 +17,23 @@
         h1 {
             color: #4CAF50;
             text-align: center;
+            background-color: rgb(255, 156, 18);
             margin-top: 50px;
+            margin-left: 10px;
+            margin-right: 10px;
+            border-radius: 30px;
         }
 
         /* Formatted Information Styles */
         .info-section {
-            max-width: 600px;
-            margin: 20px auto;
-            padding: 20px;
+            max-width: 90%; /* Increased width */
+            margin: 5px 30px;
+            padding: 50px;
             background-color: white;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(176, 142, 142, 0.1);
             border-radius: 10px;
+            border: 3px solid red; /* Added red border */
         }
-        
 
         h5 {
             color: #555;
@@ -42,34 +46,46 @@
             margin-bottom: 75px;
         }
 
-        /* Styling for placeholder variables */
-        p::before {
-            content: "{{ "; /* Simulates the template */
-            color: #ff6347;
+        /* Styling for the button */
+        .blue-button {
+            display: block;
+            width: 200px;
+            height: 50px;
+            background-color: #007BFF; /* Blue color */
+            color: white;
+            text-align: center;
+            line-height: 50px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 20px auto; /* Center the button */
         }
 
-        p::after {
-            content: " }}";
-            color: #ff6347;
+        .blue-button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
         }
     </style>
 </head>
 <body>
-
     <!-- Header -->
     <h1>Toko Musik John Lennon</h1>
 
     <!-- Information Section -->
     <div class="info-section">
         <h5>NPM:</h5>
-        <p>npm</p>
+        <p>{{npm}}</p>
         
         <h5>Name:</h5>
-        <p>name</p>
+        <p>{{name}}</p>
         
         <h5>Class:</h5>
-        <p>class</p>
+        <p>{{class}}</p>
     </div>
+
+    <!-- Blue Button that does nothing -->
+    <button class="blue-button" onclick="return false;">Click Me</button>
 
 </body>
 </html>
+.
