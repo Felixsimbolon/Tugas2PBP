@@ -1,8 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toko Mustik John Lennon</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #d7d4d4;
+            margin: 0;
+            padding: 0;
+        }
 
-<h1>Toko Mustik John Lennon</h1>
-<h5>NPM: </h5>
-<p>{{ npm }}<p>
-<h5>Name: </h5>
-<p>{{ name }}<p>
-<h5>Class: </h5>
-<p>{{ class }}<p>
+        /* Header Styles */
+        h1 {
+            color: #4CAF50;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        /* Formatted Information Styles */
+        .info-section {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        h5 {
+            color: #555;
+            margin: 10px 0 5px;
+        }
+
+        p {
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 75px;
+        }
+
+        /* Styling for placeholder variables */
+        p::before {
+            content: "{{ "; /* Simulates the template */
+            color: #ff6347;
+        }
+
+        p::after {
+            content: " }}";
+            color: #ff6347;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <h1>Toko Musik John Lennon</h1>
+
+    <!-- Information Section -->
+    <div class="info-section">
+        <h5>NPM:</h5>
+        <p>npm</p>
+        
+        <h5>Name:</h5>
+        <p>name</p>
+        
+        <h5>Class:</h5>
+        <p>class</p>
+    </div>
+
+</body>
+</html>
