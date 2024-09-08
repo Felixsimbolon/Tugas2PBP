@@ -23,6 +23,10 @@
             margin-right: 10px;
             border-radius: 30px;
         }
+        h3{
+            color: #05060f;
+            margin-left: 30px;
+        }
 
         /* Formatted Information Styles */
         .info-section {
@@ -70,11 +74,12 @@
 <body>
     <!-- Header -->
     <h1>Toko Musik John Lennon</h1>
+    <h3>by {{Name}}, {{Npm}}, kelas {{kelas}}</h3>
 
     <!-- Information Section -->
     <div class="info-section">
         <h5>Item:</h5>
-        <p>{{Name}}</p>
+        <p>{{Item Name}}</p>
         
         <h5>Price:</h5>
         <p>${{Price}}</p>
@@ -84,8 +89,8 @@
     </div>
 
     <!-- Blue Button that does nothing -->
-    <button class="blue-button" onclick="return false;">Click Me</button>
+    <button class="blue-button" onclick="return false;">Purchase</button>
 
 </body>
 </html>
-.
+
