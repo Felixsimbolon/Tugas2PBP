@@ -134,7 +134,7 @@ Sebuah proyek Django sederhana sebagai Tugas Mata Kuliah Pemrograman Berbasis Pl
 ### Jawaban dari Pertanyaan
 
 2. **Bagan Arsitektur Django**
-![](D:\Bagan.png)
+![](static/images/raster/bagan)
 Permintaan _request_ dari pengguna terlebih dahulu diproses untuk diarahkan ke View yang tepat. Setelah itu, View akan berinteraksi dengan Model untuk mengambil atau memperbarui data, dan kemudian menggunakan Template untuk menampilkan informasi yang diperlukan. Akhirnya, hasil tersebut dikirim kembali ke pengguna dalam bentuk _response_.
 
 3. **Fungsi Git dalam Pengembangan Perangkat Lunak:**
