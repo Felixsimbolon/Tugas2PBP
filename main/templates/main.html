@@ -79,6 +79,22 @@
             margin: 10px 0;
         }
 
+        /* Button Styles */
+        .purchase-button {
+            background-color: #D32F2F; /* Dark red */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .purchase-button:hover {
+            background-color: #e54040; /* Darker red */
+        }
+
         /* Image Section */
         .info-image {
             flex: 1;
@@ -112,7 +128,7 @@
 
     <!-- Navigation -->
     <nav>
-        <h3>by {{Name}}, {{Npm}}, kelas {{kelas}}</h3>
+        <h3>by {{Name}}, {{Npm}}, kelas {{Kelas}}</h3>
     </nav>
 
     <!-- Main Content -->
@@ -127,8 +143,11 @@
                 <h5>Price:</h5>
                 <p>${{Price}}</p>
 
-                <h5>Class:</h5>
+                <h5>Description:</h5>
                 <p>{{Description}}</p>
+
+                <!-- Purchase Button -->
+                <button class="purchase-button">Purchase</button>
             </div>
 
             <!-- Image Box -->
