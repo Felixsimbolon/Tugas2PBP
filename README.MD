@@ -67,7 +67,7 @@ Sebuah proyek Django sederhana sebagai Tugas Mata Kuliah Pemrograman Berbasis Pl
     ```
 13. Membuat direktori templates dan menambahkan file ```main.html``` serta memodifikasi file tersebut
 
-14. Menambahkan fungsi untuk me-_render_ laman main pada file ```views.py```:
+14. Menambahkan fungsi show_main untuk me-_render_ laman main pada file ```views.py```:
     ```python
     from django.shortcuts import render
 
@@ -116,7 +116,7 @@ Sebuah proyek Django sederhana sebagai Tugas Mata Kuliah Pemrograman Berbasis Pl
 18. Membuat proyek baru di pws dengan nama tokomusikjohnlennon
 19. menambahkan allowed host dengan url depoloyment pws 
     ```
-    ALLOWED_HOSTS = ["localhost", "127.0.0.1", "<URL deployment PWS kamu>"]
+    ALLOWED_HOSTS = ["localhost", "127.0.0.1", "jeremi-felix-tokomusikjohnlennon.pbp.cs.ui.ac.id"]
     ```
 20. add branch pws dengan command :
     ```
