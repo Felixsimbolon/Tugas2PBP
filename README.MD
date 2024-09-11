@@ -7,7 +7,7 @@ Sebuah proyek Django sederhana sebagai Tugas Mata Kuliah Pemrograman Berbasis Pl
 
 ### Proses Pembuatan Projek Django
 1. Membuat sebuah _repository_ Github baru bernama ```Tugas2PBP```
-2. Membuat inisal push ke dalam repo itu dalam bentuk readme.md
+2. Membuat inisial push ke dalam repo itu dalam bentuk readme.md
 3. Di direktori asal Membuat _virtual environment_ Python baru dengan command:
 
     ```bash
@@ -21,7 +21,7 @@ Sebuah proyek Django sederhana sebagai Tugas Mata Kuliah Pemrograman Berbasis Pl
     ``` bash
     Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
     ``` 
-    agar dapat mengaktivasikan virtual environment.
+    di windows powershell agar dapat mengaktivasikan virtual environment.
 
 6. Membuat berkas _requirements_ dengan 
     isi dari requirements.txt
