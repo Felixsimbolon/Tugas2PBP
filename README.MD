@@ -56,8 +56,8 @@ Sebuah proyek Django sederhana sebagai Tugas Mata Kuliah Pemrograman Berbasis Pl
     from django.db import models
 
     class Product(models.Model):
-        name = models.CharField(max_length=255)
-        amount = models.IntegerField()
+        item = models.CharField(max_length=255)
+        price = models.IntegerField()
         description = models.TextField()
     ```
 12. Melakukan migrasi dengan command:
@@ -73,12 +73,12 @@ Sebuah proyek Django sederhana sebagai Tugas Mata Kuliah Pemrograman Berbasis Pl
 
     def show_main(request):
         context = {
-           'Name' : 'Jeremi Felix Adiyatma',
-            'Npm' : '2306219575',
-            'Kelas' : 'PBP B',
-            'Item Name' : 'Gitar Michael Jackson',
-            'Price': 6000000,
-            'Description': 'This was the guitar Michael Used on his tour in early 2009 months before he died'
+           'name' : 'Jeremi Felix Adiyatma',
+            'npm' : '2306219575',
+            'kelas' : 'PBP B',
+            'item Name' : 'Gitar Michael Jackson',
+            'price': 6000000,
+            'description': 'This was the guitar Michael Used on his tour in early 2009 months before he died'
         }
 
         return render(request, "main.html", context)
