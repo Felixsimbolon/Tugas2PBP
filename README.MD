@@ -152,3 +152,147 @@ Selain itu, Django sangat skalabel dan cocok untuk proyek kecil maupun besar, me
 5. **Mengapa Model pada Django Disebut Sebagai ORM?**
 
 Model dalam Django disebut sebagai ORM (Object-Relational Mapping) karena fungsinya yang menghubungkan antara objek dalam kode Python dengan tabel dalam basis data relasional. Dengan ORM, pengembang dapat berinteraksi dengan basis data menggunakan objek Python tanpa harus menulis kueri SQL manual, sehingga mempermudah proses manipulasi data seperti membuat, membaca, memperbarui, atau menghapus data dalam tabel. ORM juga memberikan abstraksi dari basis data, artinya pengembang tidak perlu memikirkan detail-detail kompleks SQL dan bisa fokus pada logika bisnis aplikasi. Django ORM juga mendukung kompatibilitas antar berbagai sistem manajemen basis data, seperti SQLite, MySQL, dan PostgreSQL, sehingga pengembang bisa beralih antar platform basis data tanpa mengubah kode. Hal ini menjadikan ORM sebagai alat yang sangat efisien dan fleksibel dalam pengelolaan basis data di Django.
+
+
+## Tugas 3
+
+2. memodifikasi settings.py di direktori toko_musik_john_lennon di bagian TEMPLATES:
+```
+'BACKEND': 'django.template.backends.django.DjangoTemplates',
+'DIRS': [BASE_DIR / 'templates'], # Tambahkan konten baris ini
+'APP_DIRS': True,
+```
+3. mengubah main.html menjadi:
+```
+ {% extends 'base.html' %}
+ {% block content %}
+ <h1>Mental Health Tracker</h1>
+
+ <h5>NPM: </h5>
+ <p>{{ npm }}<p>
+
+ <h5>Name:</h5>
+ <p>{{ name }}</p>
+
+ <h5>Class:</h5>
+ <p>{{ class }}</p>
+ {% endblock content %}
+ ```
+4. delete file db.sqlite3
+5. Mengubah models.py menjadi
+```
+from django.db import models
+import uuid 
+
+class ProductEntry(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)  
+    item = models.CharField(max_length=255)
+    price = models.IntegerField()
+    description = models.TextField()
+    item_satisfactory = models.IntegerField()
+```
+6. make migrations and migrate
+
+7. Membuat forms.py di direktori main dengan isi
+```
+from django.forms import ModelForm
+from main.models import ProductEntry
+
+class ProductEntryForm(ModelForm):
+    class Meta:
+        model = ProductEntry
+        fields = ["item", "description", "item_satisfactory"]
+```
+8. menambahkan bagian import di views.py:
+```
+from django.shortcuts import render, redirect   
+from main.forms import MoodEntryForm
+from main.models import MoodEntry
+```
+
+9. Menambahkan Method create_product_entry untuk menambah entri database di file views.py di direktori main
+```
+def create_product_entry(request):
+    form = ProductEntryForm(request.POST or None)
+
+    if form.is_valid() and request.method == "POST":
+        form.save()
+        return redirect('main:show_main')
+
+    context = {'form': form}
+    return render(request, "create_product_entry.html", context)
+```
+10. Routing URL ke laman yang bersangkutan di file urls.py di direktori main
+```
+urlpatterns = [
+    ...
+    path('create-product-entry', create_product_entry, name='create_product_entry'),
+    ...
+]
+```
+11. Membuat file baru bernama create_product_entry.html di main/templates/
+
+12. Menambahkan folder templates di direktori utama dan base.html sebagai basis dari laman-laman lain
+
+
+
+Mengimplementasikan database ke dalam laman utama main.html dan juga menjadi perpanjangan dari base.html di direktori utama
+
+...
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Amount</th>
+        <th>Description</th>
+        <th></th>
+    </tr>
+
+    {% for salt in salts %}
+        <tr>
+            <td>{{salt.name}}</td>
+            <td>{{salt.amount}}</td>
+            <td>{{salt.description}}</td>
+            <td id="delete">
+                <a href="{% url 'main:delete' salt.id %}">
+                    <button class="tablebutton">
+                        Delete
+                    </button>
+                </a>
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+...
+Menggunakan folder static untuk mengorganisir aset-aset yang digunakan seperti gambar dan stylesheet CSS untuk mempercantik laman
+
+Membuat app baru bernama debug untuk melihat tampilan JSON dan XML dari app main
+
+Menambahkan fungsi-fungsi yang diperlukan untuk menampilkan JSON dan XML baik secara keseluruhan maupun per entri database
+
+def show_xml(request):
+    data = Salts.objects.all()
+    return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
+
+def show_json(request):
+    data = Salts.objects.all()
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+
+def show_xml_by_id(request, id):
+    data = Salts.objects.filter(pk=id)
+    return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
+
+def show_json_by_id(request, id):
+    data = Salts.objects.filter(pk=id)
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+Merouting kembali URL yang bersangkutan di file urls.py di direktori debug
+
+urlpatterns = [
+    path('json/', show_json, name='json'),
+    path('xml/', show_xml, name='xml'),
+    path('json/<int:id>/', show_json_by_id, name='json_by_id'),
+    path('xml/<int:id>/', show_xml_by_id, name='xml_by_id'),
+]
+Mengetest aplikasi pada localhost dengan command:
+
+python manage.py runserver
+kemudian membuka http://localhost:8000/ di browser

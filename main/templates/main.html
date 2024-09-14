@@ -1,167 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toko Musik John Lennon</title>
-    <style>
-        /* General Styles */
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #FFC107; /* Orange background */
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+{% extends 'base.html' %}
+{% block content %}
+<h1>Mental Health Tracker</h1>
 
-        /* Header Styles */
-        header {
-            background-color: #F5F5F5; /* Light gray */
-            text-align: center;
-            padding: 40px;
-            position: relative;
-            border-bottom: 4px solid red;
-        }
+<h5>NPM: </h5>
+<p>{{ npm }}<p>
 
-        header h1 {
-            color: #D32F2F; /* Dark red */
-            font-size: 36px;
-            margin: 0;
-        }
+<h5>Name:</h5>
+<p>{{ name }}</p>
 
-        /* Menu Section */
-        nav {
-            background-color: #43A047; /* Green */
-            padding: 20px;
-            text-align: center;
-        }
+<h5>Class:</h5>
+<p>{{ kelas }}</p>
+{% if not product_entries %}
+<p>Belum ada data mood pada mental health tracker.</p>
+{% else %}
+<table>
+  <tr>
+    <th>item Name</th>
+    <th>Description</th>
+    <th>satisfaction</th>
+  </tr>
 
-        nav h3 {
-            color: white;
-            font-size: 24px;
-            margin: 0;
-        }
+  {% comment %} Berikut cara memperlihatkan data mood di bawah baris ini 
+  {% endcomment %} 
+  {% for product_entry in product_entries %}
+  <tr>
+    <td>{{product_entry.item}}</td>
+    <td>{{product_entry.description}}</td>
+    <td>{{product_entry.satisfaction}}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
 
-        /* Main Content Wrapper */
-        main {
-            flex: 1; /* Allows the content to grow and push the footer to the bottom */
-            padding: 20px;
-        }
+<br />
 
-        /* Information Section */
-        .info-section {
-            display: flex;
-            background-color: #FFFFFF; /* White */
-            padding: 30px;
-            margin: 20px auto;
-            width: 80%;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-            border: 5px solid #FF5722; /* Red border */
-        }
-
-        .info-text {
-            flex: 1;
-            padding-right: 20px;
-        }
-
-        .info-section h5 {
-            color: #333;
-            margin: 10px 0;
-            font-size: 20px;
-        }
-
-        .info-section p {
-            font-size: 18px;
-            color: #555;
-            margin: 10px 0;
-        }
-
-        /* Button Styles */
-        .purchase-button {
-            background-color: #D32F2F; /* Dark red */
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 18px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        
-
-        .purchase-button:hover {
-            background-color: #e54040; /* Darker red */
-        }
-
-        /* Image Section */
-        .info-image {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .info-image img {
-            max-width: 100%;
-            border-radius: 10px;
-        }
-
-        /* Footer */
-        footer {
-            background-color: #000;
-            color: white;
-            text-align: center;
-            padding: 20px;
-            position: sticky;
-            width: 100%;
-        }
-
-    </style>
-</head>
-<body>
-    <!-- Header -->
-    <header>
-        <h1>Toko Musik John Lennon</h1>
-    </header>
-
-    <!-- Navigation -->
-    <nav>
-        <h3>by {{name}}, {{npm}}, kelas {{kelas}}</h3>
-    </nav>
-
-    <!-- Main Content -->
-    <main>
-        <!-- Information Section -->
-        <div class="info-section">
-            <!-- Text Box -->
-            <div class="info-text">
-                <h5>Item:</h5>
-                <p>{{item}}</p>
-
-                <h5>Price:</h5>
-                <p>${{price}}</p>
-
-                <h5>Description:</h5>
-                <p>{{description}}</p>
-
-                <!-- Purchase Button -->
-                <button class="purchase-button">Purchase</button>
-            </div>
-
-            <!-- Image Box -->
-            <div class="info-image">
-                <img src="https://th.bing.com/th/id/OIP.lg-tJiwtguygoc9yapGMAQHaEW?pid=ImgDetMain" alt="Guitar Image">
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer>
-        <p>Contact us at johnlennonmusic@gmail.com</p>
-    </footer>
-
-</body>
-</html>
+<a href="{% url 'main:create_product_entry' %}">
+  <button>Add New Mood Entry</button>
+</a>
+{% endblock content %}
