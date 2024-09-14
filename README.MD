@@ -323,4 +323,15 @@ Berikut adalah penjelasan dari masing-masing pertanyaan yang bisa kamu tambahkan
 
    `csrf_token` (Cross-Site Request Forgery token) diperlukan untuk melindungi aplikasi web dari serangan CSRF, di mana penyerang dapat membuat pengguna tanpa sadar mengirimkan permintaan berbahaya ke server tanpa persetujuan mereka. Token ini bekerja dengan memastikan bahwa setiap form yang dikirimkan berasal dari pengguna yang sah dan bukan dari skrip eksternal. Jika kita tidak menambahkan `csrf_token`, aplikasi menjadi rentan terhadap serangan CSRF, di mana penyerang dapat memanfaatkan kepercayaan pengguna terhadap situs yang sedang mereka kunjungi untuk mengirimkan permintaan yang memodifikasi data (seperti mengubah kata sandi atau melakukan transaksi ilegal) tanpa izin dari pengguna tersebut. Tanpa token ini, aplikasi tidak memiliki cara untuk membedakan apakah permintaan tersebut sah atau tidak.
 
+### Screemshot Postman
+1. **XML**
+![](static/images/raster/xmlss.png)
+2. **XML by ID**
+![](static/images/raster/xmlssid.png)
+3. **JSON**
+![](static/images/raster/JSONss.png)
+4. **JSON by ID**
+![](static/images/raster/JSONssid.png)
+
+
 
