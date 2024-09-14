@@ -234,65 +234,93 @@ urlpatterns = [
 
 12. Menambahkan folder templates di direktori utama dan base.html sebagai basis dari laman-laman lain
 
+13. Mengimplementasikan database ke dalam laman utama main.html dan juga menjadi perpanjangan dari base.html di direktori utama
 
-
-Mengimplementasikan database ke dalam laman utama main.html dan juga menjadi perpanjangan dari base.html di direktori utama
-
+```
 ...
 <table>
-    <tr>
-        <th>Name</th>
-        <th>Amount</th>
-        <th>Description</th>
-        <th></th>
-    </tr>
+  <tr>
+    <th>item Name</th>
+    <th>Description</th>
+    <th>satisfaction</th>
+  </tr>
 
-    {% for salt in salts %}
-        <tr>
-            <td>{{salt.name}}</td>
-            <td>{{salt.amount}}</td>
-            <td>{{salt.description}}</td>
-            <td id="delete">
-                <a href="{% url 'main:delete' salt.id %}">
-                    <button class="tablebutton">
-                        Delete
-                    </button>
-                </a>
-            </td>
-        </tr>
-    {% endfor %}
+  {% comment %} Berikut cara memperlihatkan data mood di bawah baris ini 
+  {% endcomment %} 
+  {% for product_entry in product_entries %}
+  <tr>
+    <td>{{product_entry.item}}</td>
+    <td>{{product_entry.description}}</td>
+    <td>{{product_entry.satisfaction}}</td>
+  </tr>
+  {% endfor %}
 </table>
 ...
+```
 Menggunakan folder static untuk mengorganisir aset-aset yang digunakan seperti gambar dan stylesheet CSS untuk mempercantik laman
 
-Membuat app baru bernama debug untuk melihat tampilan JSON dan XML dari app main
-
-Menambahkan fungsi-fungsi yang diperlukan untuk menampilkan JSON dan XML baik secara keseluruhan maupun per entri database
-
+14. menambahkan fungsi-fungsi yang diperlukan untuk menampilkan JSON dan XML baik secara keseluruhan maupun per entri database
+```
 def show_xml(request):
-    data = Salts.objects.all()
+    data = Product.objects.all()
     return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
 
 def show_json(request):
-    data = Salts.objects.all()
+    data = Product.objects.all()
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
 
 def show_xml_by_id(request, id):
-    data = Salts.objects.filter(pk=id)
+    data = Product.objects.filter(pk=id)
     return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
 
 def show_json_by_id(request, id):
-    data = Salts.objects.filter(pk=id)
+    data = Product.objects.filter(pk=id)
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
-Merouting kembali URL yang bersangkutan di file urls.py di direktori debug
+```
+15. Merouting function function tadi di file urls.py direktori main. File urls.py di direktori main akan menjadi seperti berikut
+```
+from django.urls import path
+from main.views import show_main
+from main.views import show_main, create_product_entry
+from main.views import show_main, create_product_entry, show_xml, show_json, show_xml_by_id, show_json_by_id
+
+app_name = 'main'
 
 urlpatterns = [
-    path('json/', show_json, name='json'),
-    path('xml/', show_xml, name='xml'),
-    path('json/<int:id>/', show_json_by_id, name='json_by_id'),
-    path('xml/<int:id>/', show_xml_by_id, name='xml_by_id'),
+    path('', show_main, name='show_main'),
+    path('create-product-entry', create_product_entry, name='create_product_entry'),
+    path('xml/', show_xml, name='show_xml'),
+    path('json/', show_json, name='show_json'),
+    path('xml/<str:id>/', show_xml_by_id, name='show_xml_by_id'),
+    path('json/<str:id>/', show_json_by_id, name='show_json_by_id'),
 ]
-Mengetest aplikasi pada localhost dengan command:
-
+```
+16. Mengetest aplikasi pada localhost dengan command:
+```
 python manage.py runserver
-kemudian membuka http://localhost:8000/ di browser
+kemudian membuka http://localhost:8000/ 
+
+```
+di browser
+
+### Jawaban dari pertanyaan
+
+Berikut adalah penjelasan dari masing-masing pertanyaan yang bisa kamu tambahkan ke file README.md:
+
+1. **Mengapa kita memerlukan data delivery dalam pengimplementasian sebuah platform?**
+
+   Data delivery diperlukan untuk memastikan bahwa data dapat dipindahkan dengan aman dan efisien dari satu sistem ke sistem lain dalam platform. Dalam pengimplementasian platform, data delivery mencakup proses pengiriman, penerimaan, dan integrasi data di antara berbagai komponen atau layanan. Tanpa mekanisme data delivery yang baik, platform akan kesulitan dalam menjaga konsistensi data, sinkronisasi antar layanan, serta memudahkan pengambilan keputusan berbasis data. Selain itu, kecepatan dan keamanan data delivery memengaruhi pengalaman pengguna, terutama dalam aplikasi yang memerlukan real-time data transfer.
+
+2. **Mana yang lebih baik antara XML dan JSON? Mengapa JSON lebih populer dibandingkan XML?**
+
+   Secara umum, JSON (JavaScript Object Notation) dianggap lebih baik dalam banyak kasus dibandingkan XML (eXtensible Markup Language) untuk pertukaran data, terutama dalam pengembangan web modern. JSON lebih populer karena lebih ringan, mudah dibaca oleh manusia, dan lebih mudah di-parse oleh browser serta bahasa pemrograman modern. Selain itu, JSON memiliki struktur yang lebih sederhana tanpa kelebihan atribut atau tag, yang membuatnya lebih efisien untuk pengiriman data. Di sisi lain, XML lebih cocok jika diperlukan fleksibilitas lebih tinggi dalam menyimpan data yang kompleks dan ketika metadata tambahan dibutuhkan. Namun, popularitas JSON didorong oleh adopsi luas di berbagai framework dan API berbasis web yang lebih sering menggunakan JSON.
+
+3. **Jelaskan fungsi dari method `is_valid()` pada form Django dan mengapa kita membutuhkan method tersebut?**
+
+   Method `is_valid()` pada form Django digunakan untuk memeriksa apakah data yang dikirimkan melalui form sesuai dengan aturan validasi yang telah ditentukan. Method ini akan mengembalikan nilai `True` jika data yang di-submit memenuhi semua validasi (seperti tipe data, panjang karakter, atau format), dan `False` jika ada kesalahan. Kita membutuhkan method ini untuk memastikan bahwa data yang diterima oleh aplikasi adalah valid dan sesuai dengan ekspektasi, sehingga dapat mencegah terjadinya error atau eksploitasi lebih lanjut, seperti memasukkan data yang berbahaya ke dalam sistem.
+
+4. **Mengapa kita membutuhkan `csrf_token` saat membuat form di Django? Apa yang dapat terjadi jika kita tidak menambahkan `csrf_token` pada form Django? Bagaimana hal tersebut dapat dimanfaatkan oleh penyerang?**
+
+   `csrf_token` (Cross-Site Request Forgery token) diperlukan untuk melindungi aplikasi web dari serangan CSRF, di mana penyerang dapat membuat pengguna tanpa sadar mengirimkan permintaan berbahaya ke server tanpa persetujuan mereka. Token ini bekerja dengan memastikan bahwa setiap form yang dikirimkan berasal dari pengguna yang sah dan bukan dari skrip eksternal. Jika kita tidak menambahkan `csrf_token`, aplikasi menjadi rentan terhadap serangan CSRF, di mana penyerang dapat memanfaatkan kepercayaan pengguna terhadap situs yang sedang mereka kunjungi untuk mengirimkan permintaan yang memodifikasi data (seperti mengubah kata sandi atau melakukan transaksi ilegal) tanpa izin dari pengguna tersebut. Tanpa token ini, aplikasi tidak memiliki cara untuk membedakan apakah permintaan tersebut sah atau tidak.
+
+
