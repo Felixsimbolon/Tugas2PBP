@@ -155,15 +155,15 @@ Model dalam Django disebut sebagai ORM (Object-Relational Mapping) karena fungsi
 
 
 ## Tugas 3
-
+1. tambahkan direktori templates di direktori utama dan buat file base.html di dalam templates
 2. memodifikasi settings.py di direktori toko_musik_john_lennon di bagian TEMPLATES:
-```
+```py
 'BACKEND': 'django.template.backends.django.DjangoTemplates',
-'DIRS': [BASE_DIR / 'templates'], # Tambahkan konten baris ini
+'DIRS': [BASE_DIR / 'templates'], 
 'APP_DIRS': True,
 ```
 3. mengubah main.html menjadi:
-```
+```html
  {% extends 'base.html' %}
  {% block content %}
  <h1>Mental Health Tracker</h1>
@@ -180,21 +180,20 @@ Model dalam Django disebut sebagai ORM (Object-Relational Mapping) karena fungsi
  ```
 4. delete file db.sqlite3
 5. Mengubah models.py menjadi
-```
+```py
 from django.db import models
 import uuid 
 
-class ProductEntry(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)  
+class Product(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False) 
     item = models.CharField(max_length=255)
-    price = models.IntegerField()
     description = models.TextField()
-    item_satisfactory = models.IntegerField()
+    satisfaction = models.IntegerField()
 ```
 6. make migrations and migrate
 
 7. Membuat forms.py di direktori main dengan isi
-```
+```py
 from django.forms import ModelForm
 from main.models import ProductEntry
 
@@ -204,14 +203,14 @@ class ProductEntryForm(ModelForm):
         fields = ["item", "description", "item_satisfactory"]
 ```
 8. menambahkan bagian import di views.py:
-```
+```python
 from django.shortcuts import render, redirect   
 from main.forms import MoodEntryForm
 from main.models import MoodEntry
 ```
 
 9. Menambahkan Method create_product_entry untuk menambah entri database di file views.py di direktori main
-```
+```python
 def create_product_entry(request):
     form = ProductEntryForm(request.POST or None)
 
@@ -223,7 +222,7 @@ def create_product_entry(request):
     return render(request, "create_product_entry.html", context)
 ```
 10. Routing URL ke laman yang bersangkutan di file urls.py di direktori main
-```
+```py
 urlpatterns = [
     ...
     path('create-product-entry', create_product_entry, name='create_product_entry'),
@@ -232,11 +231,10 @@ urlpatterns = [
 ```
 11. Membuat file baru bernama create_product_entry.html di main/templates/
 
-12. Menambahkan folder templates di direktori utama dan base.html sebagai basis dari laman-laman lain
 
-13. Mengimplementasikan database ke dalam laman utama main.html dan juga menjadi perpanjangan dari base.html di direktori utama
+12. Mengimplementasikan database ke dalam laman utama main.html dan juga menjadi perpanjangan dari base.html di direktori utama
 
-```
+```html
 ...
 <table>
   <tr>
@@ -257,10 +255,9 @@ urlpatterns = [
 </table>
 ...
 ```
-Menggunakan folder static untuk mengorganisir aset-aset yang digunakan seperti gambar dan stylesheet CSS untuk mempercantik laman
 
-14. menambahkan fungsi-fungsi yang diperlukan untuk menampilkan JSON dan XML baik secara keseluruhan maupun per entri database
-```
+13. menambahkan fungsi-fungsi yang diperlukan untuk menampilkan JSON dan XML baik secara keseluruhan maupun per entri database
+```py
 def show_xml(request):
     data = Product.objects.all()
     return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
@@ -277,8 +274,8 @@ def show_json_by_id(request, id):
     data = Product.objects.filter(pk=id)
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
 ```
-15. Merouting function function tadi di file urls.py direktori main. File urls.py di direktori main akan menjadi seperti berikut
-```
+14. Merouting function function tadi di file urls.py direktori main. File urls.py di direktori main akan menjadi seperti berikut
+```py
 from django.urls import path
 from main.views import show_main
 from main.views import show_main, create_product_entry
@@ -295,7 +292,7 @@ urlpatterns = [
     path('json/<str:id>/', show_json_by_id, name='show_json_by_id'),
 ]
 ```
-16. Mengetest aplikasi pada localhost dengan command:
+15. Mengetest aplikasi pada localhost dengan command:
 ```
 python manage.py runserver
 kemudian membuka http://localhost:8000/ 
@@ -325,9 +322,9 @@ Berikut adalah penjelasan dari masing-masing pertanyaan yang bisa kamu tambahkan
 
 ### Screemshot Postman
 1. **XML**
-![](static/images/raster/xmlss.png)
+![](static/images/raster/XMLss.png)
 2. **XML by ID**
-![](static/images/raster/xmlssid.png)
+![](static/images/raster/XMLssid.png)
 3. **JSON**
 ![](static/images/raster/JSONss.png)
 4. **JSON by ID**
