@@ -9,6 +9,9 @@ def show_main(request):
         'name' : 'Jeremi Felix Adiyatma',
         'npm' : '2306219575',
         'kelas' : 'PBP B',
+        'item' : 'Gitar Michael jackson',
+        'price' : 600000,
+        'description' : 'this is the guitar that Michael Jackson used on his tour in early 2009 months before he died',
         'product_entries': product_entries
     }
 
