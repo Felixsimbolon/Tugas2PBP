@@ -155,7 +155,24 @@ Model dalam Django disebut sebagai ORM (Object-Relational Mapping) karena fungsi
 
 
 ## Tugas 3
-1. tambahkan direktori templates di direktori utama dan buat file base.html di dalam templates
+1. tambahkan direktori templates di direktori utama dan buat file base.html di dalam templates dengan isi
+```html
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block meta %} {% endblock meta %}
+   
+  </head>
+
+  <body>
+    {% block content %} {% endblock content %}
+  </body>
+</html>
+
+```
 2. memodifikasi settings.py di direktori toko_musik_john_lennon di bagian TEMPLATES:
 ```py
 'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -200,7 +217,7 @@ from main.models import ProductEntry
 class ProductEntryForm(ModelForm):
     class Meta:
         model = ProductEntry
-        fields = ["item", "description", "item_satisfactory"]
+        fields = ["description", "satisfaction"]
 ```
 8. menambahkan bagian import di views.py:
 ```python
@@ -229,32 +246,68 @@ urlpatterns = [
     ...
 ]
 ```
-11. Membuat file baru bernama create_product_entry.html di main/templates/
+11. Membuat file baru bernama create_product_entry.html di main/templates/ dengan isi:
+```html
+{% extends 'base.html' %} 
+{% block content %}
+<header>
+  <h1 class="title">Add New Product Review</h1>
+</header>
 
+<div class="form-container">
+  <form method="POST">
+    {% csrf_token %}
+    <table>
+      {{ form.as_table }}
+      <tr>
+        <td></td>
+        <td>
+          <input type="submit" value="Add Product Review" />
+        </td>
+      </tr>
+    </table>
+  </form>
+</div>
+
+{% endblock %}
+```
+serta menambahkan style
 
 12. Mengimplementasikan database ke dalam laman utama main.html dan juga menjadi perpanjangan dari base.html di direktori utama
 
 ```html
-...
-<table>
-  <tr>
-    <th>item Name</th>
-    <th>Description</th>
-    <th>satisfaction</th>
-  </tr>
 
-  {% comment %} Berikut cara memperlihatkan data mood di bawah baris ini 
-  {% endcomment %} 
-  {% for product_entry in product_entries %}
-  <tr>
-    <td>{{product_entry.item}}</td>
-    <td>{{product_entry.description}}</td>
-    <td>{{product_entry.satisfaction}}</td>
-  </tr>
-  {% endfor %}
-</table>
+<!-- Main Content -->
+<main>
+    <!-- Information Section -->
+    <div class="info-section">
+        <!-- Text Box -->
+        <div class="info-text">
+            <h5>Item:</h5>
+            <p>{{item}}</p>
+
+            <h5>Price:</h5>
+            <p>${{price}}</p>
+
+            <h5>Description:</h5>
+            <p>{{description}}</p>
+
+            <!-- Purchase Button -->
+            <button class="purchase-button">Purchase</button>
+            <a href="{% url 'main:create_product_entry' %}">
+                <button class ="review-button">Add Product Review</button>
+              </a>
+        </div>
+
+        <!-- Image Box -->
+        <div class="info-image">
+            <img src="https://th.bing.com/th/id/OIP.lg-tJiwtguygoc9yapGMAQHaEW?pid=ImgDetMain" alt="Guitar Image">
+        </div>
+    </div>
+</main>
 ...
 ```
+13. menambah design dengan menambah <styles> di main.html
 
 13. menambahkan fungsi-fungsi yang diperlukan untuk menampilkan JSON dan XML baik secara keseluruhan maupun per entri database
 ```py
