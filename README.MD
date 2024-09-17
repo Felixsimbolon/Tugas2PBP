@@ -183,16 +183,9 @@ Model dalam Django disebut sebagai ORM (Object-Relational Mapping) karena fungsi
 ```html
  {% extends 'base.html' %}
  {% block content %}
- <h1>Mental Health Tracker</h1>
-
- <h5>NPM: </h5>
- <p>{{ npm }}<p>
-
- <h5>Name:</h5>
- <p>{{ name }}</p>
-
- <h5>Class:</h5>
- <p>{{ class }}</p>
+<nav>
+    <h3>by {{name}}, {{npm}}, kelas {{kelas}}</h3>
+</nav>
  {% endblock content %}
  ```
 4. delete file db.sqlite3
@@ -212,18 +205,18 @@ class Product(models.Model):
 7. Membuat forms.py di direktori main dengan isi
 ```py
 from django.forms import ModelForm
-from main.models import ProductEntry
+from main.models import Product
 
 class ProductEntryForm(ModelForm):
     class Meta:
-        model = ProductEntry
+        model = Product
         fields = ["description", "satisfaction"]
 ```
 8. menambahkan bagian import di views.py:
 ```python
 from django.shortcuts import render, redirect   
-from main.forms import MoodEntryForm
-from main.models import MoodEntry
+from main.forms import ProductEntryForm
+from main.models import Product
 ```
 
 9. Menambahkan Method create_product_entry untuk menambah entri database di file views.py di direktori main
