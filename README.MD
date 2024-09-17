@@ -368,13 +368,13 @@ Berikut adalah penjelasan dari masing-masing pertanyaan yang bisa kamu tambahkan
 
 ### Screemshot Postman
 1. **XML**
-![](static/images/raster/XMLss.png)
+![](static/images/raster/XMLall.png)
 2. **XML by ID**
-![](static/images/raster/XMLssid.png)
+![](static/images/raster/XMLbyID.png)
 3. **JSON**
-![](static/images/raster/JSONss.png)
+![](static/images/raster/JSONall.png)
 4. **JSON by ID**
-![](static/images/raster/JSONssid.png)
+![](static/images/raster/JSONbyID.png)
 
 
 
