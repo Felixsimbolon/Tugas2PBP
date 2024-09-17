@@ -120,6 +120,29 @@
         border-radius: 10px;
     }
 
+    /* Table Styles */
+    table {
+        width: 100%; /* Full width */
+        border-collapse: collapse; /* Remove gaps between table cells */
+        margin-top: 20px;
+    }
+
+    table th, table td {
+        border: 1px solid #FF5722; /* Red border for table */
+        padding: 12px;
+        text-align: left;
+        color: #333;
+    }
+
+    table th {
+        background-color: #D32F2F; /* Dark red for header */
+        color: white;
+    }
+
+    table tr:nth-child(even) {
+        background-color: #f2f2f2; /* Light gray for even rows */
+    }
+
     /* Footer */
     footer {
         background-color: #000;
@@ -129,8 +152,8 @@
         position: sticky;
         width: 100%;
     }
-
 </style>
+
 
 
 <!-- Navigation -->
@@ -165,6 +188,29 @@
             <img src="https://th.bing.com/th/id/OIP.lg-tJiwtguygoc9yapGMAQHaEW?pid=ImgDetMain" alt="Guitar Image">
         </div>
     </div>
+    {% if not product_entries %}
+    <p>Belum ada review dari produk ini.</p>
+    {% else %}
+    <table>
+        <tr>
+            <th>time</th>
+            <th>location</th>
+            <th>description</th>
+            <th>satisfaction</th>
+        </tr>
+
+    {% comment %} Berikut cara memperlihatkan data mood di bawah baris ini 
+    {% endcomment %} 
+        {% for product_entry in product_entries %}
+        <tr>
+            <td>{{product_entry.time}}</td>
+            <td>{{product_entry.location}}</td>
+            <td>{{product_entry.description}}</td>
+            <td>{{product_entry.satisfaction}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
 </main>
 
 <!-- Footer -->
