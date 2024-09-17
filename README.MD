@@ -192,11 +192,13 @@ Model dalam Django disebut sebagai ORM (Object-Relational Mapping) karena fungsi
 5. Mengubah models.py menjadi
 ```py
 from django.db import models
-import uuid 
+import uuid
 
 class Product(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False) 
     item = models.CharField(max_length=255)
+    time = models.DateField(auto_now_add=True)
+    location = models.TextField()
     description = models.TextField()
     satisfaction = models.IntegerField()
 ```
@@ -210,7 +212,7 @@ from main.models import Product
 class ProductEntryForm(ModelForm):
     class Meta:
         model = Product
-        fields = ["description", "satisfaction"]
+        fields = ["description", "location", "satisfaction"]
 ```
 8. menambahkan bagian import di views.py:
 ```python
@@ -271,6 +273,11 @@ serta menambahkan style
 ```html
 
 <!-- Main Content -->
+<nav>
+    <h3>by {{name}}, {{npm}}, kelas {{kelas}}</h3>
+</nav>
+
+<!-- Main Content -->
 <main>
     <!-- Information Section -->
     <div class="info-section">
@@ -297,7 +304,37 @@ serta menambahkan style
             <img src="https://th.bing.com/th/id/OIP.lg-tJiwtguygoc9yapGMAQHaEW?pid=ImgDetMain" alt="Guitar Image">
         </div>
     </div>
+    {% if not product_entries %}
+    <p>Belum ada review dari produk ini.</p>
+    {% else %}
+    <table>
+        <tr>
+            <th>time</th>
+            <th>location</th>
+            <th>description</th>
+            <th>satisfaction</th>
+        </tr>
+
+    {% comment %} Berikut cara memperlihatkan data mood di bawah baris ini 
+    {% endcomment %} 
+        {% for product_entry in product_entries %}
+        <tr>
+            <td>{{product_entry.time}}</td>
+            <td>{{product_entry.location}}</td>
+            <td>{{product_entry.description}}</td>
+            <td>{{product_entry.satisfaction}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
 </main>
+
+<!-- Footer -->
+<footer>
+    <p>Contact us at johnlennonmusic@gmail.com</p>
+</footer>
+
+{% endblock content %}
 ...
 ```
 13. menambah design dengan menambah <styles> di main.html
@@ -345,6 +382,65 @@ kemudian membuka http://localhost:8000/
 
 ```
 di browser
+16. membuat direktori .github dan workflows di dalamnya
+17. membuat file deploy.yml dan mengisi nya dengan:
+    ```yml
+    name: Push to PWS
+
+    on:
+    push:
+        branches: [ main ]
+        paths-ignore:
+            - '**.md'
+    pull_request:
+        branches: [ main ]
+        paths-ignore:
+            - '**.md'
+
+    jobs:
+    build-and-push:
+        runs-on: ubuntu-latest
+
+        steps:
+        - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+            fetch-depth: 0
+
+        - name: Set up Git
+        run: |
+            git config --global user.name 'github-actions[bot]'
+            git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+        - name: Check PWS remote, pull, merge, and push
+        env:
+            PWS_URL: ${{ secrets.PWS_URL }}
+        run: |
+            # Check if master branch exists locally
+            if ! git show-ref --verify --quiet refs/heads/master; then
+                echo "Creating master branch"
+                git branch master
+            fi
+            
+            # Switch to master branch
+            git checkout master
+
+            # Push to master branch and capture the output
+            push_output=$(git push $PWS_URL main:master 2>&1)
+            if [[ $? -ne 0 ]]; then
+                echo "Push failed with output: $push_output"
+                echo "Error: Unable to push changes. Please check the error message above and resolve any conflicts manually."
+                exit 1
+            fi
+            echo "Push successful with output: $push_output"
+
+    ```
+18. menambah settings.py dengan:
+```py
+CSRF_TRUSTED_ORIGINS = ["http://localhost","http://127.0.0.1","http://jeremi-felix-tokomusikjohnlennon.pbp.cs.ui.ac.id", "http://jeremi-felix-tokomusikjohnlennon.pbp.cs.ui.ac.id"]
+
+```
+19. push ke github
 
 ### Jawaban dari pertanyaan
 
