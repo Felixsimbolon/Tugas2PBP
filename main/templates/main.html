@@ -188,6 +188,13 @@
             <img src="https://th.bing.com/th/id/OIP.lg-tJiwtguygoc9yapGMAQHaEW?pid=ImgDetMain" alt="Guitar Image">
         </div>
     </div>
+    <!--logout button-->
+    <a href="{% url 'main:logout' %}">
+        <button>Logout</button>
+      </a>
+    <h5>Username: {{nama}}
+    <h5>Sesi terakhir login: {{ last_login }}</h5>
+
     {% if not product_entries %}
     <p>Belum ada review dari produk ini.</p>
     {% else %}
@@ -212,6 +219,7 @@
     </table>
     {% endif %}
 </main>
+
 
 <!-- Footer -->
 <footer>

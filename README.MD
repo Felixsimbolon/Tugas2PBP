@@ -473,4 +473,120 @@ Berikut adalah penjelasan dari masing-masing pertanyaan yang bisa kamu tambahkan
 ![](static/images/raster/JSONbyID.png)
 
 
+### Tugas 4
+# Penjeasan Kode
+1. Tambahkan import UserCreationForm dan messages di views.py
+2. tambah fungsi register di views.py untuk membuat registration form:
+```py
+def register(request):
+    form = UserCreationForm()
 
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your account has been successfully created!')
+            return redirect('main:login')
+    context = {'form':form}
+    return render(request, 'register.html', context)
+```
+3. buat register.html di direktori main/templates/
+4. routing register di urls.py dengan import register from main.views dan menambahkan path register di urlpatterns
+5. Tambahkan import authenticate, login, dan AuthenticationForm untuk membuat login page
+6. membuat function login_user:
+```py
+def login_user(request):
+   if request.method == 'POST':
+      form = AuthenticationForm(data=request.POST)
+
+      if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('main:show_main')
+
+   else:
+      form = AuthenticationForm(request)
+   context = {'form': form}
+   return render(request, 'login.html', context)
+```
+7. membuat file login.html dan routing seperti biasa
+8. import logout di views.py untuk membuat function logout
+9. buat fungsi logout:
+```py
+def logout_user(request):
+    logout(request)
+    return redirect('main:login')
+```
+10. routing function logout di urls
+11. import login_required dan menambahkan 
+```py
+from django.contrib.auth.decorators import login_required
+```
+di atas function show_main
+12. ambahkan import HttpResponseRedirect, reverse, dan datetime di views.py
+13. mengganti function login_user, mengganti bagian if form.is_valid()  menjadi:
+```py
+if form.is_valid():
+    user = form.get_user()
+    login(request, user)
+    response = HttpResponseRedirect(reverse("main:show_main"))
+    response.set_cookie('last_login', str(datetime.datetime.now()))
+    return response
+```
+14. tambahkan context di show_main dengan 'last_login': request.COOKIES['last_login']
+15. tambahkan
+```py
+response = HttpResponseRedirect(reverse('main:login'))
+response.delete_cookie('last_login')
+```
+di function logout_user dan ubah return jadi return response
+16. import user di models.py dan tambahkan user di class Product
+17. ubah function create_product_entry menjadi :
+```py
+def create_product_entry(request):
+    form = MoodEntryForm(request.POST or None)
+
+    if form.is_valid() and request.method == "POST":
+        mood_entry = form.save(commit=False)
+        mood_entry.user = request.user
+        mood_entry.save()
+        return redirect('main:show_main')
+
+    context = {'form': form}
+    return render(request, "create_mood_entry.html", context)
+```
+18. ubah value dari product_entries menjadi: Product.objects.filter(user=request.user)
+19. make migrations and migrate
+20. import os di settings.py dan ganti variabel DEBUG menjadi:
+```py
+PRODUCTION = os.getenv("PRODUCTION", False)
+DEBUG = not PRODUCTION
+```
+## Pertanyaan
+1. **Perbedaan antara `HttpResponseRedirect()` dan `redirect()`**:
+   - `HttpResponseRedirect()` adalah fungsi bawaan Django yang secara eksplisit mengirimkan respons HTTP yang mengalihkan ke URL baru. Anda perlu memberikan URL sebagai argumen untuk memandu ke mana pengalihan terjadi.
+   - `redirect()` adalah shortcut yang lebih fleksibel yang digunakan untuk pengalihan di Django. Selain menerima URL, `redirect()` bisa menerima argumen lain seperti *view name* atau *model object*. Jika kita berikan nama view, Django akan otomatis melakukan *reverse lookup* dan mendapatkan URL yang sesuai.
+
+   Jadi, `redirect()` menawarkan kemudahan dan fleksibilitas dalam menentukan target pengalihan, sementara `HttpResponseRedirect()` digunakan lebih secara langsung ketika Anda sudah tahu URL tujuan.
+
+2. **Cara kerja penghubungan model `Product` dengan `User`**:
+   Dalam Django, untuk menghubungkan model `Product` dengan `User`, biasanya digunakan relasi *ForeignKey*. Misalnya, jika Anda ingin melacak siapa pengguna yang membuat atau memiliki produk, Anda bisa menambahkan *ForeignKey* di model `Product` yang merujuk ke model `User` dari Django. Contoh implementasi:
+   ```python
+   from django.contrib.auth.models import User
+   from django.db import models
+
+   class Product(models.Model):
+       user = models.ForeignKey(User, on_delete=models.CASCADE)
+   ```
+   Dalam kode ini, setiap `Product` akan berhubungan dengan satu `User` (pemilik produk). Relasi ini memungkinkan Django untuk mengidentifikasi pemilik produk, serta memungkinkan akses data produk yang dibuat oleh pengguna tertentu.
+
+3. **Perbedaan antara authentication dan authorization, serta proses yang terjadi saat login**:
+   - *Authentication* adalah proses verifikasi identitas pengguna, memastikan bahwa pengguna adalah benar-benar siapa yang mereka klaim. Ini dilakukan dengan meminta kredensial seperti username dan password.
+   - *Authorization* terjadi setelah *authentication*, dan ini adalah proses memastikan apakah pengguna yang sudah terotentikasi memiliki hak untuk mengakses sumber daya tertentu. Misalnya, apakah pengguna boleh melihat atau mengedit data tertentu.
+
+   Ketika pengguna melakukan login, Django pertama-tama memverifikasi kredensial mereka melalui sistem *authentication* (misalnya, username dan password). Jika berhasil, Django membuat sesi pengguna yang menyimpan status login tersebut. Selanjutnya, untuk setiap permintaan setelah login, Django akan mengecek apakah pengguna memiliki hak akses tertentu melalui proses *authorization*.
+
+4. **Bagaimana Django mengingat pengguna yang telah login dan kegunaan lain dari cookies**:
+   Django mengingat pengguna yang telah login menggunakan mekanisme *session*. Saat pengguna login, Django menyimpan ID sesi di dalam sebuah *cookie* yang dikirim ke browser. Browser kemudian akan menyertakan cookie ini setiap kali mengirimkan permintaan berikutnya, sehingga Django dapat mengenali pengguna tersebut sebagai pengguna yang telah login.
+
+   Selain untuk menjaga sesi login, *cookies* juga sering digunakan untuk menyimpan preferensi pengguna, pengaturan tampilan, atau data lain yang dapat memudahkan interaksi pengguna di suatu situs. Namun, tidak semua *cookies* aman. Beberapa *cookies* bisa digunakan oleh pihak ketiga untuk melacak aktivitas pengguna di berbagai situs. Oleh karena itu, praktik keamanan yang baik termasuk mengaktifkan enkripsi dan pembatasan akses pada *cookies* yang sensitif.
