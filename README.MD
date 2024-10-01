@@ -590,3 +590,285 @@ DEBUG = not PRODUCTION
    Django mengingat pengguna yang telah login menggunakan mekanisme *session*. Saat pengguna login, Django menyimpan ID sesi di dalam sebuah *cookie* yang dikirim ke browser. Browser kemudian akan menyertakan cookie ini setiap kali mengirimkan permintaan berikutnya, sehingga Django dapat mengenali pengguna tersebut sebagai pengguna yang telah login.
 
    Selain untuk menjaga sesi login, *cookies* juga sering digunakan untuk menyimpan preferensi pengguna, pengaturan tampilan, atau data lain yang dapat memudahkan interaksi pengguna di suatu situs. Namun, tidak semua *cookies* aman. Beberapa *cookies* bisa digunakan oleh pihak ketiga untuk melacak aktivitas pengguna di berbagai situs. Oleh karena itu, praktik keamanan yang baik termasuk mengaktifkan enkripsi dan pembatasan akses pada *cookies* yang sensitif.
+
+## Tugas 5
+
+# Penjelasan kode
+1. mengubah models.py menjadi:
+```py
+from django.db import models
+import uuid
+from django.contrib.auth.models import User
+
+class Product(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False) 
+    item = models.CharField(max_length=255)
+    picture_link = models.TextField()
+    time = models.DateField(auto_now_add=True)
+    price = models.IntegerField()
+    description = models.TextField()
+   
+```
+2. mengubah forms.py menjadi :
+```py
+from django.forms import ModelForm
+from main.models import Product
+
+class ProductEntryForm(ModelForm):
+    class Meta:
+        model = Product
+        fields = ["item","picture_link", "price", "description"]
+```
+3. buat file global.css di direktori /static/css/ dan mengisinya dengan : 
+```css
+.form-style form input, form textarea, form select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 2px solid #bcbcbc;
+    border-radius: 0.375rem;
+}
+.form-style form input:focus, form textarea:focus, form select:focus {
+    outline: none;
+    border-color: #674ea7;
+    box-shadow: 0 0 0 3px #674ea7;
+}
+@keyframes shine {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+.animate-shine {
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.3));
+    background-size: 200% 100%;
+    animation: shine 3s infinite;
+}
+```
+4. Menambahkan dua function di views.py, yaitu delete_product dan edit_product yang bisa diterapkan pada setiap productnya.
+```py
+def edit_product_entry(request, id):
+    # Get mood entry berdasarkan id
+    product_entry = Product.objects.get(pk = id)
+
+    # Set mood entry sebagai instance dari form
+    form = ProductEntryForm(request.POST or None, instance=product_entry)
+
+    if form.is_valid() and request.method == "POST":
+        # Simpan form dan kembali ke halaman awal
+        form.save()
+        return HttpResponseRedirect(reverse('main:show_main'))
+
+    context = {'form': form}
+    return render(request, "edit_product_entry.html", context)
+def delete_product_entry(request, id):
+    # Get mood berdasarkan id
+    product_entry = Product.objects.get(pk = id)
+    # Hapus mood
+    product_entry.delete()
+    # Kembali ke halaman awal
+    return HttpResponseRedirect(reverse('main:show_main'))
+```
+5. routing di urls dengan import kedua function tersebut kemudian tambahkan path
+```py
+....
+path('edit-product-entry/<uuid:id>', edit_product_entry, name='edit_product_entry'),
+path('delete-product-entry/<uuid:id>', delete_product_entry, name='delete_product_entry'),
+
+```
+6. Pada base.html menambahkan beberapa code untuk responsive design web dan juga tailwind css serta add styling dengan css
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="{% static 'css/global.css' %}"/>
+```
+7. membuat navbar.html di /main/templates/ dan mengisinya dengan:
+```html
+<nav class="bg-white shadow-lg fixed top-0 left-0 z-40 w-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <!-- Links for desktop -->
+            <div class="hidden md:flex items-center space-x-4">
+                <a href="#" class="text-gray-700 hover:text-indigo-600 font-semibold">Products</a>
+                <a href="#" class="text-gray-700 hover:text-indigo-600 font-semibold">About</a>
+                <a href="#" class="text-gray-700 hover:text-indigo-600 font-semibold">Contact</a>
+            </div>
+            
+            <!-- Logo centered on all devices -->
+            <div class="flex-1 text-center">
+                <h1 class="text-2xl font-bold text-indigo-600">TMJL</h1>
+            </div>
+
+            <!-- Right side: Login/Logout links for desktop-->
+            <div class="hidden md:flex items-center space-x-4">
+                {% if user.is_authenticated %}
+                    <span class="text-gray-700 font-semibold">Welcome, {{ user.username }}</span>
+                    <a href="{% url 'main:logout' %}" class="text-center text-red-500 hover:text-red-600 font-bold py-2 px-4 transition duration-300">
+                        Logout
+                    </a>
+                {% else %}
+                    <a href="{% url 'main:login' %}" class="text-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 mr-2">
+                        Login
+                    </a>
+                    <a href="{% url 'main:register' %}" class="text-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-300">
+                        Register
+                    </a>
+                {% endif %}
+            </div>
+
+            <!-- Hamburger button for mobile -->
+            <div class="md:hidden flex items-center">
+                <button class="mobile-menu-button">
+                    <svg class="w-6 h-6 text-indigo-600" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                        <path d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div class="mobile-menu hidden md:hidden px-4 w-full md:max-w-full">
+        <div class="pt-2 pb-3 space-y-1 mx-auto">
+            <a href="#" class="block text-center text-gray-700 hover:text-indigo-600 font-semibold py-2">Products</a>
+            <a href="#" class="block text-center text-gray-700 hover:text-indigo-600 font-semibold py-2">About Us</a>
+            <a href="#" class="block text-center text-gray-700 hover:text-indigo-600 font-semibold py-2">Contact</a>
+
+            {% if user.is_authenticated %}
+                <a href="{% url 'main:logout' %}" class="block text-center text-red-500 hover:text-red-600 font-bold py-2 px-4 transition duration-300">
+                    Logout
+                </a>
+            {% else %}
+                <a href="{% url 'main:login' %}" class="block text-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 mb-2">
+                    Login
+                </a>
+                <a href="{% url 'main:register' %}" class="block text-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-300">
+                    Register
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        const btn = document.querySelector("button.mobile-menu-button");
+        const menu = document.querySelector(".mobile-menu");
+
+        btn.addEventListener("click", () => {
+            menu.classList.toggle("hidden");
+        });
+    </script>
+</nav>
+
+```
+8. membuat  edit_product_entry.html dengan isi yang kurang lebih sama dengan create product entry :
+```html
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Edit Product Entry</title>
+{% endblock meta %}
+
+{% block content %}
+{% include 'navbar.html' %}
+
+<!-- Main Wrapper with Gradient Background -->
+<div class="flex flex-col min-h-screen" style="background: linear-gradient(to bottom, #87CEEB, #B0E0E6);">
+  <div class="container mx-auto px-4 py-8 mt-16 max-w-md">
+    <h1 class="text-3xl font-bold text-center mb-8 text-black">Edit Product Entry</h1>
+  
+    <div class="bg-white shadow-md rounded-lg p-6 form-style border-2 border-yellow-500">
+      <form method="POST" class="space-y-6 overflow-auto max-h-[400px]">
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="flex flex-col">
+            <label for="{{ field.id_for_label }}" class="mb-2 font-semibold text-gray-700">
+              {{ field.label }}
+            </label>
+            <div class="w-full">
+              {{ field }}
+            </div>
+            {% if field.help_text %}
+              <p class="mt-1 text-sm text-gray-500">{{ field.help_text }}</p>
+            {% endif %}
+            {% for error in field.errors %}
+              <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endfor %}
+        <div class="flex justify-center mt-6">
+            <button type="submit" class="bg-indigo-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-indigo-700 transition duration-300 ease-in-out w-full", value = "edit product entry">
+              Edit Product Entry
+            </button>
+          </div>
+       
+      </form>
+      
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+```
+9. membuat juga card_product_entry.html dan card_info.html untuk menampilkan entry entry produk yang telah dibuat dalam bentuk persegi panjang seperti kartu
+10. menyambungkan navbar dengan main, creaate_product_entry dan edit_product_entry dengan menambahkan
+```html
+{% include 'navbar.html' %}
+```
+di bawah block content
+11. melakukan perubahan design di login,main,card_info,card_product_entry,navbar,register
+
+
+# Pertanyaan 
+1. Jelaskan urutan prioritas pengambilan CSS selector!
+
+Pada CSS, terdapat aturan prioritas yang menentukan selector mana yang akan digunakan. Berikut adalah urutan prioritasnya:
+
+    1. Important Rule: Aturan dengan penanda `!important` akan mengesampingkan semua prioritas lainnya dan memberikan prioritas tertinggi pada properti tertentu.
+    2. Inline Styles: Gaya yang ditulis langsung dalam elemen HTML, seperti `style="color:blue;"`, memiliki prioritas lebih tinggi dibandingkan yang lainnya.
+    3. ID Selector: Selector dengan ID, misalnya `#para1`, memiliki prioritas lebih tinggi dibandingkan selector elemen atau class.
+    4. Class Selector: Selector dengan class, seperti `.center`, lebih diutamakan daripada tag HTML biasa.
+    5. Tag Selector: Selector elemen HTML, seperti `h1`, memiliki prioritas yang paling rendah.
+
+2. Mengapa responsive design menjadi konsep yang penting dalam pengembangan aplikasi web? Berikan contoh aplikasi yang sudah dan belum menerapkan responsive design!
+
+Responsive design adalah pendekatan dalam desain web yang memungkinkan tampilan dan tata letak website atau aplikasi menyesuaikan secara otomatis dengan ukuran layar dan orientasi perangkat yang digunakan. Tujuan utamanya adalah untuk memberikan pengalaman pengguna yang konsisten dan optimal, baik itu diakses melalui desktop, laptop, maupun smartphone.
+
+Dengan menerapkan responsive design, tampilan web dapat dioptimalkan untuk berbagai perangkat. Ini berarti elemen-elemen di halaman tidak akan terlihat berantakan atau terdistorsi saat diakses dari berbagai ukuran layar. Selain itu, responsive design juga meningkatkan aksesibilitas—pengguna tidak perlu melakukan zoom in atau zoom out saat menggunakan perangkat mobile untuk membaca teks atau mengklik tombol. Elemen seperti gambar, video, dan konten lainnya juga akan tetap terlihat baik dan efisien pada layar yang lebih kecil tanpa memperlambat performa halaman.
+
+Contoh aplikasi yang sudah menerapkan responsive design:
+
+- Google
+- Tokopedia
+
+Contoh aplikasi yang belum menerapkan responsive design:
+
+- SiakNG
+
+3. Jelaskan perbedaan antara margin, border, dan padding, serta cara untuk mengimplementasikan ketiga hal tersebut!
+
+    1. Margin: Merupakan ruang di luar elemen, yang memisahkan elemen dari elemen lainnya. Biasanya digunakan untuk mengatur jarak antar elemen agar tata letak halaman lebih rapi.
+    2. Border: Merupakan garis pembungkus elemen yang berada di antara margin dan padding. Fungsinya untuk memberikan batas visual antara elemen dan latar belakang.
+    3. Padding: Adalah ruang di dalam elemen, antara konten dan border. Padding berfungsi untuk memberikan ruang di sekitar konten agar lebih mudah dibaca dan tampilannya lebih baik.
+
+4. Jelaskan konsep flex box dan grid layout beserta kegunaannya!
+
+Flexbox (Flexible Box) adalah metode layout satu dimensi di CSS yang digunakan untuk mengatur elemen baik secara horizontal maupun vertikal. Flexbox memudahkan penataan elemen dalam container sehingga elemen-elemen tersebut dapat menyesuaikan ukuran dan posisinya secara fleksibel dan responsif. Sedangkan Grid Layout adalah sistem layout dua dimensi yang memungkinkan developer mengatur elemen dalam baris dan kolom, sehingga lebih cocok untuk tata letak yang kompleks seperti dashboard atau galeri.
+
+Kegunaan Flexbox:
+
+1. Flexbox memudahkan pengaturan tata letak elemen di dalam container tanpa memerlukan `float` atau `positioning` manual.
+2. Elemen dapat menyesuaikan ukurannya secara otomatis sesuai dengan ruang yang tersedia di dalam container.
+3. Flexbox memudahkan penyelarasan elemen secara horizontal maupun vertikal dalam container.
+4. Dengan Flexbox, tata letak elemen secara otomatis menyesuaikan ukuran layar, sehingga sangat ideal untuk desain yang responsif.
+5. Properti seperti `justify-content` dan `align-items` memungkinkan pengaturan jarak antar elemen dengan mudah.
+6. Urutan elemen dalam container dapat diatur ulang dengan menggunakan properti `order` tanpa mengubah struktur HTML.
+
+Kegunaan Grid Layout:
+
+1. Grid Layout memungkinkan pengaturan elemen dalam baris dan kolom, cocok untuk desain halaman yang kompleks seperti dashboard atau tata letak majalah.
+2. Grid memberikan kontrol penuh atas ukuran kolom dan baris, menggunakan satuan seperti fraksi (fr), piksel (px), atau lainnya.
+3. Elemen dapat dengan mudah ditempatkan atau direntangkan melintasi beberapa kolom atau baris menggunakan properti seperti `grid-column` dan `grid-row`.
+4. Grid Layout mendukung desain responsif dengan mudah, menggunakan media queries serta properti seperti `auto-fit` dan `auto-fill`.
+5. Dengan grid, pengembang dapat membuat template halaman yang konsisten dan mudah diatur menggunakan properti `grid-template-columns` dan `grid-template-rows`.
+6. Grid Layout memungkinkan pengaturan ruang kosong di dalam tata letak, sehingga memberikan fleksibilitas dalam menciptakan desain yang minimalis dan estetis.
+
