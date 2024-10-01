@@ -1,229 +1,58 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Toko Musik John Lennon</title>
+{% endblock meta %}
+
 {% block content %}
-<header>
-    <h1>Toko Musik John Lennon</h1>
-</header>
-<style>
-    /* General Styles */
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #FFC107; /* Orange background */
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-    }
+{% include 'navbar.html' %}
 
-    /* Header Styles */
-    header {
-        background-color: #F5F5F5; /* Light gray */
-        text-align: center;
-        padding: 40px;
-        position: relative;
-        border-bottom: 4px solid red;
-    }
-
-    header h1 {
-        color: #D32F2F; /* Dark red */
-        font-size: 36px;
-        margin: 0;
-    }
-
-    /* Menu Section */
-    nav {
-        background-color: #43A047; /* Green */
-        padding: 20px;
-        text-align: center;
-    }
-
-    nav h3 {
-        color: white;
-        font-size: 24px;
-        margin: 0;
-    }
-
-    /* Main Content Wrapper */
-    main {
-        flex: 1; /* Allows the content to grow and push the footer to the bottom */
-        padding: 20px;
-    }
-
-    /* Information Section */
-    .info-section {
-        display: flex;
-        background-color: #FFFFFF; /* White */
-        padding: 30px;
-        margin: 20px auto;
-        width: 80%;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        border-radius: 10px;
-        border: 5px solid #FF5722; /* Red border */
-    }
-
-    .info-text {
-        flex: 1;
-        padding-right: 20px;
-    }
-
-    .info-section h5 {
-        color: #333;
-        margin: 10px 0;
-        font-size: 20px;
-    }
-
-    .info-section p {
-        font-size: 18px;
-        color: #555;
-        margin: 10px 0;
-    }
-
-    /* Button Styles */
-    .purchase-button {
-        background-color: #D32F2F; /* Dark red */
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        font-size: 18px;
-        border-radius: 5px;
-        cursor: pointer;
-        margin-top: 10px;
-        margin-bottom: 20px;
-    }
-    
-
-    .purchase-button:hover {
-        background-color: #e54040; /* Darker red */
-    }
-    .review-button{
-        background-color: #D32F2F; /* Dark red */
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        font-size: 18px;
-        border-radius: 5px;
-        cursor: pointer;
-        margin-top: 10px;
-        margin-bottom: 20px;
-    }
-
-    /* Image Section */
-    .info-image {
-        flex: 1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .info-image img {
-        max-width: 100%;
-        border-radius: 10px;
-    }
-
-    /* Table Styles */
-    table {
-        width: 100%; /* Full width */
-        border-collapse: collapse; /* Remove gaps between table cells */
-        margin-top: 20px;
-    }
-
-    table th, table td {
-        border: 1px solid #FF5722; /* Red border for table */
-        padding: 12px;
-        text-align: left;
-        color: #333;
-    }
-
-    table th {
-        background-color: #D32F2F; /* Dark red for header */
-        color: white;
-    }
-
-    table tr:nth-child(even) {
-        background-color: #f2f2f2; /* Light gray for even rows */
-    }
-
-    /* Footer */
-    footer {
-        background-color: #000;
-        color: white;
-        text-align: center;
-        padding: 20px;
-        position: sticky;
-        width: 100%;
-    }
-</style>
-
-
-
-<!-- Navigation -->
-<nav>
-    <h3>by {{name}}, {{npm}}, kelas {{kelas}}</h3>
-</nav>
-
-<!-- Main Content -->
-<main>
-    <!-- Information Section -->
-    <div class="info-section">
-        <!-- Text Box -->
-        <div class="info-text">
-            <h5>Item:</h5>
-            <p>{{item}}</p>
-
-            <h5>Price:</h5>
-            <p>${{price}}</p>
-
-            <h5>Description:</h5>
-            <p>{{description}}</p>
-
-            <!-- Purchase Button -->
-            <button class="purchase-button">Purchase</button>
-            <a href="{% url 'main:create_product_entry' %}">
-                <button class ="review-button">Add Product Review</button>
-              </a>
-        </div>
-
-        <!-- Image Box -->
-        <div class="info-image">
-            <img src="https://th.bing.com/th/id/OIP.lg-tJiwtguygoc9yapGMAQHaEW?pid=ImgDetMain" alt="Guitar Image">
-        </div>
+<!-- Main Wrapper -->
+<div class="overflow-x-hidden px-4 md:px-8 pb-8 pt-24 min-h-screen flex flex-col" style="background: linear-gradient(to bottom, white, #87CEEB);">
+  <!-- Info Section -->
+  <div class="p-2 mb-6 relative">
+    <div class="relative grid grid-cols-1 md:grid-cols-3 gap-8 z-30">
+      {% include "card_info.html" with title='NPM' value=npm %}
+      {% include "card_info.html" with title='Name' value=name %}
+      {% include "card_info.html" with title='Class' value=kelas %}
     </div>
-    <!--logout button-->
-    <a href="{% url 'main:logout' %}">
-        <button>Logout</button>
-      </a>
-    <h5>Username: {{nama}}
-    <h5>Sesi terakhir login: {{ last_login }}</h5>
 
-    {% if not product_entries %}
-    <p>Belum ada review dari produk ini.</p>
-    {% else %}
-    <table>
-        <tr>
-            <th>time</th>
-            <th>location</th>
-            <th>description</th>
-            <th>satisfaction</th>
-        </tr>
+    <!-- Decorative Bars for Desktop and Mobile -->
+    <div class="absolute top-11 left-0 z-20 w-full px-6 hidden md:flex">
+      <div class="w-full min-h-1 bg-indigo-700"></div>
+    </div>
+    <div class="absolute top-0 left-0 z-20 md:hidden flex h-full w-full py-6">
+      <div class="h-full min-w-1 bg-indigo-700 mx-auto"></div>
+    </div>
+  </div>
 
-    {% comment %} Berikut cara memperlihatkan data mood di bawah baris ini 
-    {% endcomment %} 
-        {% for product_entry in product_entries %}
-        <tr>
-            <td>{{product_entry.time}}</td>
-            <td>{{product_entry.location}}</td>
-            <td>{{product_entry.description}}</td>
-            <td>{{product_entry.satisfaction}}</td>
-        </tr>
-        {% endfor %}
-    </table>
-    {% endif %}
-</main>
+  <!-- Last Login Section -->
+  <div class="px-3 mb-4">
+    <div class="flex items-center bg-indigo-600 py-2 px-4 rounded-md w-fit">
+      <h1 class="text-white text-center">Last Login: {{last_login}}</h1>
+    </div>
+  </div>
 
+  <!-- Add New Product Review Button -->
+  <div class="flex justify-end mb-6">
+    <a href="{% url 'main:create_product_entry' %}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105">
+      Add New Product Review
+    </a>
+  </div>
 
-<!-- Footer -->
-<footer>
-    <p>Contact us at johnlennonmusic@gmail.com</p>
-</footer>
-
+  <!-- Product Entries -->
+  {% if not product_entries %}
+    <div class="flex flex-col items-center justify-center min-h-[24rem] p-6">
+      <img src="{% static 'images/raster/sedih-banget.png' %}" alt="Sad face" class="w-32 h-32 mb-4"/>
+      <p class="text-center text-gray-600 mt-4">Belum ada data mood pada mental health tracker.</p>
+    </div>
+  {% else %}
+    <div class="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6 w-full">
+      {% for product_entry in product_entries %}
+        {% include 'card_product_entry.html' with product_entry=product_entry %}
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
 {% endblock content %}

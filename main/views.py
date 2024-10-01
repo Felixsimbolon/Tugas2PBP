@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect   
+from django.shortcuts import render, redirect, reverse   
 from main.forms import ProductEntryForm
 from main.models import Product
 from django.http import HttpResponse
@@ -25,7 +25,7 @@ def show_main(request):
         'price' : 600000,
         'description' : 'this is the guitar that Michael Jackson used on his tour in early 2009 months before he died',
         'product_entries': product_entries,
-        'last_login': request.COOKIES['last_login']
+        'last_login': request.COOKIES['last_login'],
     }
 
     return render(request, "main.html", context)
@@ -40,6 +40,20 @@ def create_product_entry(request):
 
     context = {'form': form}
     return render(request, "create_product_entry.html", context)
+def edit_product_entry(request, id):
+    # Get mood entry berdasarkan id
+    product_entry = Product.objects.get(pk = id)
+
+    # Set mood entry sebagai instance dari form
+    form = ProductEntryForm(request.POST or None, instance=product_entry)
+
+    if form.is_valid() and request.method == "POST":
+        # Simpan form dan kembali ke halaman awal
+        form.save()
+        return HttpResponseRedirect(reverse('main:show_main'))
+
+    context = {'form': form}
+    return render(request, "edit_product_entry.html", context)
 
 
 def register(request):
@@ -69,12 +83,18 @@ def login_user(request):
       form = AuthenticationForm(request)
    context = {'form': form}
    return render(request, 'login.html', context)
-
 def logout_user(request):
     logout(request)
     response = HttpResponseRedirect(reverse('main:login'))
     response.delete_cookie('last_login')
     return response
+def delete_product_entry(request, id):
+    # Get mood berdasarkan id
+    product_entry = Product.objects.get(pk = id)
+    # Hapus mood
+    product_entry.delete()
+    # Kembali ke halaman awal
+    return HttpResponseRedirect(reverse('main:show_main'))
 
 
 def show_xml(request):
