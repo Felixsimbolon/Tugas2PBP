@@ -9,50 +9,58 @@
 {% include 'navbar.html' %}
 
 <!-- Main Wrapper -->
-<div class="overflow-x-hidden px-4 md:px-8 pb-8 pt-24 min-h-screen flex flex-col" style="background: linear-gradient(to bottom, white, #87CEEB);">
-  <!-- Info Section -->
-  <div class="p-2 mb-6 relative">
-    <div class="relative grid grid-cols-1 md:grid-cols-3 gap-8 z-30">
-      {% include "card_info.html" with title='NPM' value=npm %}
-      {% include "card_info.html" with title='Name' value=name %}
-      {% include "card_info.html" with title='Class' value=kelas %}
-    </div>
-
-    <!-- Decorative Bars for Desktop and Mobile -->
-    <div class="absolute top-11 left-0 z-20 w-full px-6 hidden md:flex">
-      <div class="w-full min-h-1 bg-indigo-700"></div>
-    </div>
-    <div class="absolute top-0 left-0 z-20 md:hidden flex h-full w-full py-6">
-      <div class="h-full min-w-1 bg-indigo-700 mx-auto"></div>
+<div class="overflow-x-hidden min-h-screen flex flex-col" style="background: linear-gradient(to bottom, white, #87CEEB);">
+  
+  <!-- Image Section with Overlay (Starts at absolute top) -->
+  <div class="relative w-screen h-screen">
+    <img src="{% static 'images/raster/bg3.jpg' %}" alt="Toko Musik John Lennon" class="absolute inset-0 w-full h-full object-cover"/>
+    <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <h1 class="text-white text-4xl font-bold">Welcome to Toko Musik John Lennon</h1>
     </div>
   </div>
-
+  
   <!-- Last Login Section -->
-  <div class="px-3 mb-4">
+  <div class="px-3 mb-4 mt-4">
     <div class="flex items-center bg-indigo-600 py-2 px-4 rounded-md w-fit">
       <h1 class="text-white text-center">Last Login: {{last_login}}</h1>
     </div>
   </div>
 
-  <!-- Add New Product Review Button -->
-  <div class="flex justify-end mb-6">
+  <!-- Add New Product Review Button (Added px-10 for indentation) -->
+  <div class="flex justify-end mb-6 px-10"> <!-- Added px-10 to move the button inside -->
     <a href="{% url 'main:create_product_entry' %}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105">
       Add New Product Review
     </a>
   </div>
 
   <!-- Product Entries -->
-  {% if not product_entries %}
-    <div class="flex flex-col items-center justify-center min-h-[24rem] p-6">
-      <img src="{% static 'images/raster/sedih-banget.png' %}" alt="Sad face" class="w-32 h-32 mb-4"/>
-      <p class="text-center text-gray-600 mt-4">Belum ada entry Produk</p>
-    </div>
-  {% else %}
-    <div class="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6 w-full">
-      {% for product_entry in product_entries %}
-        {% include 'card_product_entry.html' with product_entry=product_entry %}
-      {% endfor %}
-    </div>
-  {% endif %}
+  <!-- Product Entries -->
+{% if not product_entries %}
+<div class="flex flex-col items-center justify-center min-h-[24rem] p-6">
+    <img src="{% static 'images/raster/sedih-banget2.png' %}" alt="Sad face" class="w-32 h-32 mb-4"/>
+    <p class="text-center text-gray-600 mt-4">Belum ada entry Produk</p>
+</div>
+{% else %}
+<div class="grid grid-cols-3 gap-2 px-10"> <!-- Changed gap from 6 to 2 -->
+    {% for product_entry in product_entries %}
+        <!-- Products arrangement based on (index % 3) -->
+        <div class="
+            {% if forloop.counter|divisibleby:3 %}
+                col-span-1 justify-self-end <!-- Right column -->
+            {% elif forloop.counter|add:1|divisibleby:3 %}
+                col-span-1 justify-self-center <!-- Middle column -->
+            {% else %}
+                col-span-1 justify-self-start <!-- Left column -->
+            {% endif %}
+            text-left <!-- Ensuring text is always left-aligned -->
+        ">
+            <div class="card_product_entry text-left">
+                {% include 'card_product_entry.html' with product_entry=product_entry %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
 </div>
 {% endblock content %}

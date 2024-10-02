@@ -1,14 +1,14 @@
 <div class="relative break-inside-avoid">
-    <div class="relative top-5 bg-[#f7f7f7] shadow-md mb-6 break-inside-avoid flex flex-col border-2 border-black-500 rounded-lg">
-        
+    <div class="relative top-5 bg-[#f7f7f7] shadow-md mb-6 break-inside-avoid flex flex-col border-2 border-black-500 rounded-lg w-full min-w-[400px] max-w-[100%] min-h-[580px] max-h-[580px]"> <!-- Set width to max-w-[100%] -->
+
         <!-- Display the image if picture_link is provided -->
         {% if product_entry.picture_link %}
         <div class="w-full h-60 overflow-hidden"> <!-- Set fixed height for the image container -->
             <img src="{{ product_entry.picture_link }}" alt="{{ product_entry.item }}" class="h-full w-full object-cover rounded-md border-b-2 border-white-500">
         </div>
         {% endif %}
-        
-        <div class="p-4">
+
+        <div class="p-4 flex flex-col flex-grow"> <!-- Added flex-grow for the content section -->
             <h3 class="font-bold text-xl mb-2">{{ product_entry.item }}</h3>
             <p class="text-gray-600">{{ product_entry.time }}</p>
 
