@@ -65,7 +65,7 @@ def edit_product_entry(request, id):
     # Get mood entry berdasarkan id
     product_entry = Product.objects.get(pk = id)
 
-    # Set mood entry sebagai instance dari form
+    # Set mood entry sebagai instance dari formE
     form = ProductEntryForm(request.POST or None, instance=product_entry)
 
     if form.is_valid() and request.method == "POST":
@@ -88,6 +88,7 @@ def register(request):
             return redirect('main:login')
     context = {'form':form}
     return render(request, 'register.html', context)
+
 
 def login_user(request):
    if request.method == 'POST':
