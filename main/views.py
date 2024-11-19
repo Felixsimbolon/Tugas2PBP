@@ -18,7 +18,7 @@ from django.utils.html import strip_tags
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 import json
-
+@csrf_exempt
 @login_required(login_url='/login')
 def show_main(request):
     context = {
@@ -110,6 +110,7 @@ def login_user(request):
       form = AuthenticationForm(request)
    context = {'form': form}
    return render(request, 'login.html', context)
+@csrf_exempt
 def logout_user(request):
     logout(request)
     response = HttpResponseRedirect(reverse('main:login'))
