@@ -17,8 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls import path, include
+from authentication.views import login, register  # Tambahkan register di baris ini
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('main.urls')),
+    path('register/', register, name='register'),
+    path('auth/', include('authentication.urls'))
+    
 ]

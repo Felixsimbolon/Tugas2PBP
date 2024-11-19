@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-k+ni)fg1)ct7%+dpx^xi+oo@$!2=o5-)u$#odx%&qb#s4&2^mr
 # SECURITY WARNING: don't run with debug turned on in production!
 PRODUCTION = os.getenv("PRODUCTION", False)
 DEBUG = not PRODUCTION
-ALLOWED_HOSTS = ["localhost", "127.0.0.1","jeremi-felix-tokomusikjohnlennon.pbp.cs.ui.ac.id"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1","jeremi-felix-tokomusikjohnlennon.pbp.cs.ui.ac.id","10.0.2.2"]
 
 
 # Application definition
@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'main'
+    'main',
+    'authentication',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -46,6 +48,7 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -83,6 +86,12 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SAMESITE = 'None'
 
 
 # Password validation

@@ -11,4 +11,7 @@ class Product(models.Model):
     time = models.DateField(auto_now_add=True)
     price = models.IntegerField()
     description = models.TextField()
+
+
+    
    
