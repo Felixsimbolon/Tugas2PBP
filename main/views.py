@@ -15,6 +15,9 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.utils.html import strip_tags
+from django.http import JsonResponse
+from django.contrib.auth.models import User
+import json
 
 @login_required(login_url='/login')
 def show_main(request):
@@ -133,5 +136,32 @@ def show_xml_by_id(request, id):
 def show_json_by_id(request, id):
     data = Product.objects.filter(pk=id)
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+@csrf_exempt
+def create_product_flutter(request):
+    if request.method == 'POST':
+        try:
+            # Parse JSON data from the request body
+            data = json.loads(request.body)
+            
+            # Create a new ProductEntry instance
+            new_product = Product.objects.create(
+                user=request.user,
+                item=data["item"],
+                picture_link=data["picture_link"],
+                description=data["description"],
+                price=int(data["price"]),
+            )
+            
+            # Save the new product instance
+            new_product.save()
+
+            # Return success response
+            return JsonResponse({"status": "success"}, status=200)
+        except Exception as e:
+            # Handle errors and return an error response
+            return JsonResponse({"status": "error", "message": str(e)}, status=400)
+    else:
+        # Return an error response for unsupported methods
+        return JsonResponse({"status": "error", "message": "Invalid request method"}, status=401)
 # Create your views here.
 
